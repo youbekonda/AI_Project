@@ -1,0 +1,103 @@
+{
+  "description": "Allowlisted official UCM public sources for CampusAsk. Verify live editions before production ingest. PDFs require local_path under data/raw/. Official 2026–2027 catalogs are Included in repo; use scripts/download_catalogs.py to refresh.",
+  "sources": [
+    {
+      "source_id": "ucm_ug_catalog_2026_2027",
+      "title": "UCM Undergraduate Catalog 2026-2027",
+      "url": "https://catalog.ucmo.edu/mime/media/view/30/1574/2026-2027+Undergraduate+Catalog+071226.pdf",
+      "year": "2026-2027",
+      "level": "undergraduate",
+      "content_type": "pdf",
+      "local_path": "catalogs/ucm_ug_catalog_2026_2027.pdf",
+      "enabled": true,
+      "provenance": {
+        "publisher": "University of Central Missouri",
+        "edition": "2026-2027 Undergraduate Catalog",
+        "document_date": "2026-07-12",
+        "retrieved_from": "https://catalog.ucmo.edu/",
+        "registrar_page": "https://www.ucmo.edu/current-students/office-of-the-registrar-and-student-records/catalogs/",
+        "download_script": "scripts/download_catalogs.py",
+        "notes": "Official undergraduate catalog PDF; Included in repo under data/raw/catalogs/ (refresh via download script)."
+      }
+    },
+    {
+      "source_id": "ucm_grad_catalog_2026_2027",
+      "title": "UCM Graduate Catalog 2026-2027",
+      "url": "https://catalog.ucmo.edu/mime/media/view/29/1575/2026-2027+Graduate+Catalog+071226.pdf",
+      "year": "2026-2027",
+      "level": "graduate",
+      "content_type": "pdf",
+      "local_path": "catalogs/ucm_grad_catalog_2026_2027.pdf",
+      "enabled": true,
+      "provenance": {
+        "publisher": "University of Central Missouri",
+        "edition": "2026-2027 Graduate Catalog",
+        "document_date": "2026-07-12",
+        "retrieved_from": "https://catalog.ucmo.edu/",
+        "registrar_page": "https://www.ucmo.edu/current-students/office-of-the-registrar-and-student-records/catalogs/",
+        "download_script": "scripts/download_catalogs.py",
+        "notes": "Official graduate catalog PDF; Included in repo under data/raw/catalogs/ (refresh via download script)."
+      }
+    },
+    {
+      "source_id": "ucm_registrar_catalogs",
+      "title": "UCM Registrar — Catalogs",
+      "url": "https://www.ucmo.edu/current-students/office-of-the-registrar-and-student-records/catalogs/",
+      "year": "2026-2027",
+      "level": "all",
+      "content_type": "html",
+      "local_path": "html_cache/ucm_registrar_catalogs.html",
+      "enabled": true
+    },
+    {
+      "source_id": "ucm_registrar_home",
+      "title": "UCM Office of the Registrar and Student Records",
+      "url": "https://www.ucmo.edu/current-students/office-of-the-registrar-and-student-records/",
+      "year": "2026-2027",
+      "level": "all",
+      "content_type": "html",
+      "local_path": "html_cache/ucm_registrar_home.html",
+      "enabled": true
+    },
+    {
+      "source_id": "ucm_catalog_portal",
+      "title": "UCM Academic Catalog Portal",
+      "url": "https://catalog.ucmo.edu/",
+      "year": "2026-2027",
+      "level": "all",
+      "content_type": "html",
+      "local_path": "html_cache/ucm_catalog_portal.html",
+      "enabled": true
+    },
+    {
+      "source_id": "fixture_policy_handbook",
+      "title": "[DEV FIXTURE] Sample Policy Handbook",
+      "url": "https://example.invalid/fixture-handbook",
+      "year": "2024-2025",
+      "level": "all",
+      "content_type": "html",
+      "local_path": "fixtures/sample_handbook.html",
+      "enabled": true
+    },
+    {
+      "source_id": "fixture_ug_catalog",
+      "title": "[DEV FIXTURE] Sample Undergraduate Catalog Excerpt",
+      "url": "https://example.invalid/fixture-ug-catalog",
+      "year": "2024-2025",
+      "level": "undergraduate",
+      "content_type": "html",
+      "local_path": "fixtures/sample_ug_catalog.html",
+      "enabled": true
+    },
+    {
+      "source_id": "fixture_grad_catalog",
+      "title": "[DEV FIXTURE] Sample Graduate Catalog Excerpt",
+      "url": "https://example.invalid/fixture-grad-catalog",
+      "year": "2024-2025",
+      "level": "graduate",
+      "content_type": "html",
+      "local_path": "fixtures/sample_grad_catalog.html",
+      "enabled": true
+    }
+  ]
+}

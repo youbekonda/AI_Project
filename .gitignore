@@ -1,0 +1,59 @@
+# Secrets and local env
+.env
+.env.local
+web/.env
+web/.env.local
+*.pem
+
+# Node / Next.js
+node_modules/
+web/node_modules/
+web/.next/
+web/out/
+web/.turbo/
+web/.vercel/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Large generated artifacts (rebuild with scripts/build_index.py)
+indexes/*.index
+indexes/embeddings.npy
+indexes/*.bin
+
+# Keep processed extracts out of git; rebuild via ingest
+data/processed/*
+!data/processed/.gitkeep
+
+# Other raw PDFs stay local; official 2026–2027 catalogs are committed
+data/raw/**/*.pdf
+!data/raw/catalogs/ucm_ug_catalog_2026_2027.pdf
+!data/raw/catalogs/ucm_grad_catalog_2026_2027.pdf
+!data/raw/**/.gitkeep
+
+# Evaluation outputs (regenerate locally)
+results/*
+!results/.gitkeep
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
