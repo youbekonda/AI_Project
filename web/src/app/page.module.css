@@ -1,156 +1,233 @@
-.hero {
+/* Landing page in the www.ucmo.edu idiom: photo hero with a translucent red panel,
+ * uppercase Lato 900 section titles, grey footer. */
+
+.page {
   min-height: 100vh;
-  position: relative;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  color: #fff8f6;
-  background:
-    linear-gradient(
-      105deg,
-      rgba(30, 6, 12, 0.92) 0%,
-      rgba(61, 10, 20, 0.78) 42%,
-      rgba(30, 6, 12, 0.55) 100%
-    ),
-    url("/ucm/campus-quad.webp") center / cover no-repeat;
+  background: var(--ucm-panel);
 }
 
-.copy {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  padding: clamp(2rem, 6vw, 5rem);
-  padding-bottom: clamp(3rem, 8vw, 5.5rem);
-  animation: hero-fade-up 0.85s ease-out both;
+.page main {
+  flex: 1;
 }
 
-.logo {
-  width: min(340px, 78vw);
-  height: auto;
-  display: block;
-  margin-bottom: 1.1rem;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+.inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-.mules {
-  margin: 0 0 0.35rem;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 600;
+/* ---------- Hero ---------- */
+
+.hero {
+  background: url("/ucm/campus-quad.webp") center / cover no-repeat, var(--ucm-charcoal);
+}
+
+.heroInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 8vw, 6rem) max(16px, env(safe-area-inset-right, 0px)) clamp(2.5rem, 8vw, 6rem)
+    max(16px, env(safe-area-inset-left, 0px));
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* ucmo.edu .red-out-sec .text-box */
+.redBox {
+  width: 100%;
+  max-width: 34rem;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  background: rgba(207, 32, 46, 0.88);
+  color: #fff;
+  animation: hero-fade-up 0.6s ease-out both;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ucm-gold-soft);
 }
 
-.product {
-  margin: 0 0 0.55rem;
+.title {
+  margin: 0.35rem 0 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #fff;
   font-family: var(--font-display);
-  font-size: clamp(3.2rem, 8vw, 5.4rem);
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  color: #fff;
-  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  font-size: clamp(3rem, 8vw, 4.75rem);
+  line-height: 1.05;
 }
 
-.headline {
-  margin: 0 0 1.6rem;
-  max-width: 28ch;
-  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
-  font-weight: 500;
-  line-height: 1.45;
-  color: rgba(255, 248, 246, 0.92);
+.lede {
+  margin: 1rem 0 1.5rem;
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-weight: 300;
+  line-height: 1.5;
 }
 
-.cta {
+/* ucmo.edu .red-search-icon: black pill with a search glyph */
+.askBtn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 3.1rem;
-  padding: 0.85rem 1.55rem;
-  border: 1px solid rgba(232, 212, 138, 0.55);
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--ucm-crimson), var(--ucm-maroon));
+  gap: 0.85rem;
+  padding: 0.7rem 1.75rem 0.7rem 1.4rem;
+  border-radius: 32px;
+  background: var(--ucm-black);
   color: #fff;
+  font-size: 1.35rem;
+  font-weight: 300;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.askBtn:hover {
+  background: var(--ucm-charcoal);
+  color: #fff;
+  text-decoration: none;
+}
+
+.askIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* ---------- Topics ---------- */
+
+.topics {
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+
+.sectionTitle {
+  margin: 0 0 1.75rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  text-transform: uppercase;
+  color: var(--ucm-heading);
+  text-align: center;
+}
+
+.topicGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.topic {
+  border-top: 4px solid var(--ucm-red);
+  background: var(--ucm-panel-tint);
+  padding: 1.1rem 1.25rem 1.25rem;
+  min-width: 0;
+}
+
+.topic h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  animation: cta-pulse 2.8s ease-in-out infinite;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ucm-heading);
 }
 
-.cta:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.06);
-  text-decoration: none;
+.topic ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  line-height: 1.55;
+  color: var(--ucm-ink);
+}
+
+.topic li + li {
+  margin-top: 0.4rem;
+}
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 3rem;
+  line-height: 1.55;
+  color: var(--ucm-ink);
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  background: var(--ucm-charcoal);
   color: #fff;
+  font-weight: 900;
 }
 
-.footnote {
-  margin: 1.35rem 0 0;
-  font-size: 0.82rem;
-  color: rgba(255, 248, 246, 0.62);
+.steps strong {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ucm-heading);
 }
 
-@media (max-width: 640px) {
-  .hero {
-    min-height: 100dvh;
-    justify-content: flex-end;
-    background:
-      linear-gradient(
-        180deg,
-        rgba(30, 6, 12, 0.45) 0%,
-        rgba(61, 10, 20, 0.72) 38%,
-        rgba(30, 6, 12, 0.94) 100%
-      ),
-      url("/ucm/campus-quad.webp") center / cover no-repeat;
-  }
+/* ---------- Footer (ucmo.edu .footer) ---------- */
 
-  .copy {
-    max-width: 100%;
-    padding: 1.5rem 1.15rem calc(2.4rem + env(safe-area-inset-bottom, 0px));
-  }
+.footer {
+  background: var(--ucm-footer);
+  padding-block: 2rem 1.75rem;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--ucm-black);
+}
 
-  .logo {
-    width: min(220px, 62vw);
-    margin-bottom: 0.85rem;
-  }
+.footer .inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 4rem;
+}
 
-  .mules {
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-  }
+.footer p {
+  margin: 0 0 0.35rem;
+}
 
-  .product {
-    font-size: clamp(2.55rem, 13vw, 3.2rem);
-    margin-bottom: 0.45rem;
-  }
+.footerHead {
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
 
-  .headline {
-    max-width: none;
-    font-size: 1.02rem;
-    margin-bottom: 1.25rem;
-  }
+.footer a {
+  color: var(--ucm-black);
+}
 
-  .cta {
-    width: 100%;
-    max-width: 22rem;
-    min-height: 3.15rem;
-  }
+.footer a:hover {
+  color: var(--ucm-red-dark);
+}
 
-  .footnote {
-    max-width: 34ch;
-    line-height: 1.4;
+@media (min-width: 760px) {
+  .topicGrid,
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 380px) {
-  .product {
-    font-size: 2.35rem;
-  }
-
-  .logo {
-    width: min(190px, 70vw);
+@media (prefers-reduced-motion: reduce) {
+  .redBox {
+    animation: none;
   }
 }

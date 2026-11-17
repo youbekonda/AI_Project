@@ -1,0 +1,145 @@
+/* Header modelled on www.ucmo.edu: white logo bar, red utility links, charcoal nav. */
+
+.header {
+  background: var(--ucm-panel);
+  flex-shrink: 0;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* App pages: span the window and use the side panel's 18px inset. */
+.fluid .inner {
+  max-width: none;
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+}
+
+.top .inner {
+  justify-content: space-between;
+  padding-block: 0.5rem;
+  min-height: 64px;
+}
+
+.logoLink {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.logo {
+  height: 44px;
+  width: auto;
+}
+
+/* Red square utility links with black dividers (ucmo.edu .sec-nav). */
+.utility {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.utility a {
+  display: block;
+  padding: 10px 22px;
+  background: var(--ucm-red);
+  border-right: 3px solid var(--ucm-black);
+  color: #fff;
+  font-size: 15px;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.utility li:last-child a {
+  border-right: 0;
+}
+
+.utility a:hover {
+  background: var(--ucm-black);
+  text-decoration: none;
+}
+
+/* Charcoal main nav (ucmo.edu .navbar-default). */
+.nav {
+  background: var(--ucm-charcoal);
+}
+
+.nav .inner {
+  min-height: 44px;
+  gap: 0.75rem;
+}
+
+.product {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  min-width: 0;
+}
+
+.navList a {
+  display: block;
+  padding: 0 14px;
+  line-height: 44px;
+  color: #fff;
+  font-size: 15px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.navList a:hover,
+.navActive {
+  background: var(--ucm-red);
+  text-decoration: none;
+}
+
+@media (max-width: 420px) {
+  .product {
+    display: none;
+  }
+
+  .navList {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 861px) {
+  .top .inner {
+    min-height: 84px;
+  }
+
+  .logo {
+    height: 60px;
+  }
+
+  .utility {
+    display: flex;
+  }
+
+  .navList {
+    margin-left: 1.5rem;
+  }
+
+  .navList a {
+    padding: 0 28px;
+    font-size: 16px;
+  }
+}

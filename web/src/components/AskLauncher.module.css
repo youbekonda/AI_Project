@@ -1,0 +1,106 @@
+/* Floating chat launcher: red rounded button + circular Mo the Mule avatar. */
+
+.launcher {
+  position: fixed;
+  right: calc(20px + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  animation: launcher-in 0.4s ease-out 0.3s both;
+}
+
+.launcher:hover {
+  text-decoration: none;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: var(--ucm-red);
+  color: #fff;
+  font-family: "Poppins", var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+/* Crop the head of Mo from the library photo into a circle. */
+.avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: #fff url("/ucm/mo-the-mule.webp") no-repeat;
+  background-size: 300% auto;
+  background-position: 50% 40%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease;
+}
+
+.launcher:hover .label {
+  background: var(--ucm-red-dark);
+  transform: translateY(-1px);
+}
+
+.launcher:hover .avatar {
+  transform: scale(1.05);
+}
+
+.launcher:focus-visible {
+  outline: none;
+}
+
+.launcher:focus-visible .label {
+  outline: 3px solid var(--ucm-black);
+  outline-offset: 2px;
+}
+
+@keyframes launcher-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .launcher {
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+  }
+
+  .label {
+    min-height: 46px;
+    padding: 0 16px;
+    font-size: 16px;
+  }
+
+  .avatar {
+    width: 54px;
+    height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launcher {
+    animation: none;
+  }
+
+  .label,
+  .avatar {
+    transition: none;
+  }
+}

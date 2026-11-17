@@ -141,3 +141,77 @@ def test_identity_rejects_non_700_id():
     assert body["ok"] is False
     assert "ucm_id" in body["errors"]
     assert "700" in body["errors"]["ucm_id"]
+
+
+def _parse_sse(text: str) -> list[tuple[str, dict]]:
+    import json
+
+    events = []
+    for block in text.strip().split("\n\n"):
+        name, data = "message", ""
+        for line in block.splitlines():
+            if line.startswith("event: "):
+                name = line[len("event: "):]
+            elif line.startswith("data: "):
+                data += line[len("data: "):]
+        events.append((name, json.loads(data) if data else {}))
+    return events
+
+
+def test_ask_stream_matches_blocking_answer():
+    """Streamed deltas carry [n] markers; the final 'done' equals /v1/ask."""
+    from unittest.mock import patch
+
+    def cited_answer(prompt: str) -> str:
+        first_id = prompt.split("CHUNK_ID: ")[1].partition("\n")[0].strip()
+        return f"Students below a 2.00 GPA are placed on probation [cite:{first_id}]."
+
+    def fake_stream(prompt: str, _settings):
+        text = cited_answer(prompt)
+        # Split mid-marker to exercise the hold-back of partial "[cite:" text.
+        cut = text.index("[cite:") + 4
+        yield text[:cut]
+        yield text[cut:]
+
+    question = "What GPA places an undergraduate student on academic probation?"
+    payload = {"question": question, "academic_level": "undergraduate"}
+    with patch("src.generation._stream_llm", side_effect=fake_stream):
+        res = client.post("/v1/ask/stream", json=payload)
+    assert res.status_code == 200
+    assert res.headers["content-type"].startswith("text/event-stream")
+    events = _parse_sse(res.text)
+    names = [name for name, _ in events]
+    assert names[0] == "status" and names[-1] == "done"
+    assert "delta" in names
+
+    streamed = "".join(data["text"] for name, data in events if name == "delta")
+    assert "[cite:" not in streamed and "[1]" in streamed
+
+    done = events[-1][1]
+    assert done["status"] == "answered"
+    assert done["sources"][0]["ref"] == 1
+
+    with patch("src.generation._call_llm", side_effect=lambda p, _s: cited_answer(p)):
+        blocking = client.post("/v1/ask", json=payload).json()
+    assert done["answer"] == blocking["answer"]
+    assert done["sources"] == blocking["sources"]
+
+
+def test_ask_stream_abstain_is_never_streamed():
+    from unittest.mock import patch
+
+    with patch("src.generation._stream_llm", side_effect=lambda _p, _s: iter(["ABS", "TAIN"])):
+        res = client.post(
+            "/v1/ask/stream",
+            json={"question": "What GPA places an undergraduate student on academic probation?"},
+        )
+    events = _parse_sse(res.text)
+    assert not [d for n, d in events if n == "delta"]
+    assert events[-1][0] == "done" and events[-1][1]["status"] == "abstained"
+
+
+def test_ask_stream_chitchat_skips_llm():
+    res = client.post("/v1/ask/stream", json={"question": "hello"})
+    events = _parse_sse(res.text)
+    assert events[-1][0] == "done"
+    assert events[-1][1]["status"] == "conversational"

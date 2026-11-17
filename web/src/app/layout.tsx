@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 /** Keep CampusAsk on the light UCM brand palette even when the OS prefers dark. */
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#fbf6f4",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -19,7 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light">
+    // Browser extensions (e.g. Scribe's data-scribe-recorder-ready) add attributes to
+    // <html> before React hydrates. This only ignores attribute mismatches on this one
+    // element; mismatches anywhere inside the page are still reported.
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
