@@ -1,42 +1,45 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Didact+Gothic&family=Poppins:wght@500&display=swap");
 
+/*
+ * Palette and type follow www.ucmo.edu (_resources/css/style.css + ucm.css):
+ * red #cf202e, hover red #9e0814, charcoal nav #404041, headings #333333,
+ * body #2d2d2d, input border #979797, footer #e2e2e3; Lato + Didact Gothic.
+ * The app is always light, like the university site.
+ */
 :root {
   color-scheme: light only;
-  --ucm-crimson: #9e1b32;
-  --ucm-maroon: #6e1224;
-  --ucm-maroon-deep: #3d0a14;
-  --ucm-gold: #c9a227;
-  --ucm-gold-soft: #e8d48a;
-  --ucm-ink: #1c1214;
-  --ucm-muted: #5e4a4e;
+  --ucm-red: #cf202e;
+  --ucm-red-dark: #9e0814;
+  --ucm-black: #000000;
+  --ucm-charcoal: #404041;
+  --ucm-heading: #333333;
+  --ucm-ink: #2d2d2d;
+  --ucm-muted: #58585a;
+  --ucm-border: #979797;
+  --ucm-line: #dcdcdd;
   --ucm-panel: #ffffff;
-  --ucm-panel-tint: #fff8f6;
-  --ucm-line: #e8d9dc;
-  --ucm-canvas-start: #fbf6f4;
-  --ucm-canvas-mid: #f3e8ea;
-  --ucm-canvas-end: #efe6df;
+  --ucm-panel-tint: #f5f5f5;
+  --ucm-footer: #e2e2e3;
   --ucm-ok: #1d6b4f;
-  --ucm-warn: #9a6b00;
-  --ucm-err: #9e1b32;
-  --radius-msg: 16px;
-  --shadow-soft: 0 10px 40px rgba(62, 10, 20, 0.08);
-  --font-display: "Cormorant Garamond", "Palatino Linotype", Georgia, serif;
-  --font-body: "Figtree", "Segoe UI", sans-serif;
-}
+  --ucm-warn: #8a5a00;
+  --ucm-err: #cf202e;
+  --radius: 3px;
+  --radius-msg: 4px;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-input: inset 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+  --font-display: "Lato", "Segoe UI", Arial, sans-serif;
+  --font-body: "Lato", "Segoe UI", Arial, sans-serif;
+  --font-ui: "Didact Gothic", "Lato", "Segoe UI", Arial, sans-serif;
 
-/* Never inherit OS dark-mode canvas/text; Ask + check-in stay light UCM chrome. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: light only;
-    --ucm-ink: #1c1214;
-    --ucm-muted: #5e4a4e;
-    --ucm-panel: #ffffff;
-    --ucm-panel-tint: #fff8f6;
-    --ucm-line: #e8d9dc;
-    --ucm-canvas-start: #fbf6f4;
-    --ucm-canvas-mid: #f3e8ea;
-    --ucm-canvas-end: #efe6df;
-  }
+  /* Older token names, kept so existing rules resolve to the new palette. */
+  --ucm-crimson: var(--ucm-red);
+  --ucm-maroon: var(--ucm-red-dark);
+  --ucm-maroon-deep: var(--ucm-heading);
+  --ucm-gold: var(--ucm-red);
+  --ucm-gold-soft: #f6c9cd;
+  --ucm-canvas-start: var(--ucm-panel-tint);
+  --ucm-canvas-mid: #ececed;
+  --ucm-canvas-end: var(--ucm-panel-tint);
 }
 
 *,
@@ -56,22 +59,12 @@ body {
   min-height: 100%;
   font-family: var(--font-body);
   color: var(--ucm-ink);
-  background:
-    radial-gradient(900px 480px at 8% -5%, rgba(158, 27, 50, 0.1) 0%, transparent 55%),
-    radial-gradient(700px 420px at 95% 8%, rgba(201, 162, 39, 0.12) 0%, transparent 50%),
-    linear-gradient(
-      165deg,
-      var(--ucm-canvas-start) 0%,
-      var(--ucm-canvas-mid) 42%,
-      var(--ucm-canvas-end) 100%
-    );
-  background-attachment: fixed;
-  background-color: var(--ucm-canvas-start);
+  background: var(--ucm-panel-tint);
   overflow-x: clip;
 }
 
 a {
-  color: var(--ucm-crimson);
+  color: var(--ucm-red);
   text-decoration: none;
 }
 

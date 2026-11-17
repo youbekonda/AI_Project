@@ -61,3 +61,53 @@ def test_format_source_block_excludes_dev_fixtures():
     cards = format_source_block([real, fixture], cited_ids=["real-1", "fix-1"])
     assert len(cards) == 1
     assert cards[0]["chunk_id"] == "real-1"
+
+
+def _pdf_passage(cid: str, page: int, text: str = "Policy text.") -> RetrievedPassage:
+    chunk = Chunk(
+        chunk_id=cid,
+        text=text,
+        source_id="ucm_ug_catalog",
+        title="UCM Undergraduate Catalog 2026-2027",
+        url="https://catalog.example/ug.pdf",
+        year="2026-2027",
+        level="undergraduate",
+        content_type="pdf",
+        page=page,
+        section=None,
+        token_estimate=2,
+    )
+    return RetrievedPassage(chunk=chunk, score=0.7)
+
+
+def test_grouped_citation_ids_are_split():
+    assert extract_citation_ids("Rule [cite:a, b].") == ["a", "b"]
+
+
+def test_sources_merge_same_page_and_link_to_pdf_page():
+    from src.citations import format_source_block
+
+    passages = [_pdf_passage("p42a", 42), _pdf_passage("p11", 11), _pdf_passage("p42b", 42)]
+    sources = format_source_block(passages, ["p42a", "p11", "p42b"])
+    assert [s["ref"] for s in sources] == [1, 2]
+    assert sources[0]["chunk_ids"] == ["p42a", "p42b"]
+    assert sources[0]["url"].endswith("ug.pdf#page=42")
+
+
+def test_number_citations_matches_source_refs():
+    from src.citations import format_source_block, number_citations
+
+    passages = [_pdf_passage("p42a", 42), _pdf_passage("p11", 11), _pdf_passage("p42b", 42)]
+    sources = format_source_block(passages, ["p42a", "p11", "p42b"])
+    raw = "GPA below 2.00 [cite:p42a][cite:p42b]. Good standing [cite:p11, fake-9]."
+    assert number_citations(raw, sources) == "GPA below 2.00[1]. Good standing[2]."
+
+
+def test_best_excerpt_centres_on_question_terms():
+    from src.citations import best_excerpt
+
+    filler = "Unrelated catalog text about housing and dining. " * 20
+    text = filler + "Students on academic probation may not enroll in more than 15 hours. " + filler
+    excerpt = best_excerpt(text, "How many hours can a student on academic probation take?")
+    assert "academic probation" in excerpt
+    assert excerpt.startswith("…") and excerpt.endswith("…")

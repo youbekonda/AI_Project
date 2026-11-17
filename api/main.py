@@ -6,15 +6,17 @@ talks to it via NEXT_PUBLIC_API_URL. Never log UCM IDs.
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Iterator, Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +24,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.config import Settings, get_settings  # noqa: E402
-from src.generation import answer_question  # noqa: E402
+from src.generation import AnswerResult, answer_question, stream_answer_events  # noqa: E402
 from src.identity import (  # noqa: E402
     build_identity,
     validate_full_name,
@@ -62,9 +64,13 @@ def get_cached_store() -> tuple[VectorStore, Settings]:
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    # Warm the index at boot so the first Ask is not a cold FAISS load.
+    # Warm the index and the embedding model at boot so the first Ask doesn't pay
+    # for loading them (the model alone adds ~1-2 s to the first question).
     try:
-        get_cached_store()
+        _store_loaded, settings = get_cached_store()
+        from src.embeddings import embed_query
+
+        embed_query("warm up", model_name=settings.embedding_model)
     except FileNotFoundError as exc:
         logger.warning("Index not available at startup: %s", exc)
     except Exception:  # noqa: BLE001
@@ -134,9 +140,9 @@ def health() -> dict[str, Any]:
         store, settings = get_cached_store()
         index_ok = True
         chunk_count = len(getattr(store, "chunks", []) or [])
-        has_key = bool(settings.llm_api_key)
+        has_key = settings.llm_configured
     except Exception:  # noqa: BLE001
-        has_key = bool(os.getenv("LLM_API_KEY", ""))
+        has_key = bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("LLM_API_KEY"))
     return {
         "status": "ok",
         "service": "campusask-api",
@@ -207,6 +213,62 @@ def ask(body: AskRequest) -> AskResponse:
         logger.exception("Ask failed")
         raise HTTPException(status_code=500, detail="CampusAsk ask failed.") from exc
 
+    return _to_response(result)
+
+
+def _sse(event: str, data: Any) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+@app.post("/v1/ask/stream")
+def ask_stream(body: AskRequest) -> StreamingResponse:
+    """Same answer as /v1/ask, sent as Server-Sent Events while it is written.
+
+    Events: ``status`` ({stage, passages}) after retrieval, ``delta`` ({text})
+    chunks of answer text with [n] citation markers, then ``done`` with the full
+    AskResponse. ``done`` is authoritative (citations validated, abstention
+    applied); clients replace the streamed text with it. ``error`` replaces
+    ``done`` if the request fails.
+    """
+    question = body.question.strip()
+    if not question:
+        raise HTTPException(status_code=400, detail="Question is required.")
+    first_name = (body.first_name or "").strip() or None
+
+    from src.conversation import classify_conversational_intent
+
+    is_chitchat = classify_conversational_intent(question) is not None
+    try:
+        store, settings = (None, None) if is_chitchat else get_cached_store()
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    def events() -> Iterator[str]:
+        yield _sse("status", {"stage": "searching"})
+        try:
+            for event, data in stream_answer_events(
+                question,
+                store=store,
+                settings=settings,
+                academic_level=body.academic_level,
+                first_name=first_name,
+            ):
+                if event == "done":
+                    yield _sse("done", _to_response(data).model_dump())
+                else:
+                    yield _sse(event, data)
+        except Exception:  # noqa: BLE001
+            logger.exception("Streaming ask failed")
+            yield _sse("error", {"message": "CampusAsk ask failed."})
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+def _to_response(result: AnswerResult) -> AskResponse:
     suggested = getattr(result, "suggested_academic_level", None)
     if suggested not in {"undergraduate", "graduate"}:
         suggested = None

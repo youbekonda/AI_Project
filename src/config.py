@@ -34,11 +34,30 @@ class Settings:
     # Tuned so catalog policy Qs (thesis/GPA) pass while off-topic stays out.
     evidence_min_score: float = float(os.getenv("EVIDENCE_MIN_SCORE", "0.38"))
 
+    # "anthropic" → Claude via the Anthropic SDK; "openai" → any OpenAI-compatible
+    # endpoint (Groq by default) via LLM_BASE_URL + LLM_API_KEY.
+    llm_provider: str = os.getenv("LLM_PROVIDER", "openai").strip().lower()
+    anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
+    # Claude effort: low | medium | high | xhigh | max (Opus 5.5 default is medium).
+    llm_effort: str = os.getenv("LLM_EFFORT", "medium").strip().lower()
+    llm_timeout_seconds: float = float(os.getenv("LLM_TIMEOUT_SECONDS", "90"))
+
     llm_api_key: str = os.getenv("LLM_API_KEY", "")
     llm_base_url: str = os.getenv(
         "LLM_BASE_URL", "https://api.groq.com/openai/v1"
     )
-    llm_model: str = os.getenv("LLM_MODEL", "openai/gpt-oss-20b")
+    llm_model: str = os.getenv(
+        "LLM_MODEL",
+        "claude-opus-5-5"
+        if os.getenv("LLM_PROVIDER", "").strip().lower() == "anthropic"
+        else "openai/gpt-oss-20b",
+    )
+
+    @property
+    def llm_configured(self) -> bool:
+        if self.llm_provider == "anthropic":
+            return bool(self.anthropic_api_key)
+        return bool(self.llm_api_key)
 
     faiss_index_path: Path = PROJECT_ROOT / "indexes" / "campusask.faiss"
     metadata_path: Path = PROJECT_ROOT / "indexes" / "chunks.jsonl"
